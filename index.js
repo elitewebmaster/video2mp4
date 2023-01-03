@@ -84,10 +84,8 @@ exports.handler = function(event, context, callback) {
                         if (err) {
                             console.log(err);
                             callback(err);
-                          //  return err;
                         } else {
                             console.log(data);
-                        //    deleteFile(filesList);
                             deleteFiles(filePath);
                             deleteFiles(filesList);
                             callback(null, { ok: true, path: data.Key });

@@ -52,14 +52,10 @@ exports.handler = function(event, context, callback) {
         bucket = process.env.S3_BUCKET_NAME, 
         localTempFolder = "/tmp", 
         filesList = localTempFolder + "/" + uuidFilename + extension,
-        key = thumbnailUrl + nameOnly + extension;
-
-
-    console.log("URL: " + url);
-    console.log("Random File: " + uuidFilename);
-    var filePath = somepath.join(localTempFolder, uuidFilename + (url.slice(url.lastIndexOf("."), url.length)));
-    console.log("File path: " + filePath);
-    var file = fs.createWriteStream(filePath, 'utf8');
+        key = thumbnailUrl + nameOnly + extension,
+        filePath = somepath.join(localTempFolder, uuidFilename + (url.slice(url.lastIndexOf("."), url.length))),
+        file = fs.createWriteStream(filePath, 'utf8');
+    
     file.on('finish', function(){ 
         console.log("File Downloaded");
 
@@ -69,11 +65,9 @@ exports.handler = function(event, context, callback) {
                       callback(err);
                   })
                   .on('end', function() {
-                      console.log('uploading ' + extension.slice(1));
-
-                      var readStream = fs.createReadStream(filesList),
+                      const readStream = fs.createReadStream(filesList),
                           params = {
-                            ACL: 'public-read',
+                            ACL: process.env.S3_BUCKET_ACL, 
                             Bucket: bucket,
                             Key: key,
                             Body: readStream,
@@ -85,7 +79,6 @@ exports.handler = function(event, context, callback) {
                             console.log(err);
                             callback(err);
                         } else {
-                            console.log(data);
                             deleteFiles(filePath);
                             deleteFiles(filesList);
                             callback(null, { ok: true, path: data.Key });

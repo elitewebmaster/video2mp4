@@ -1,15 +1,14 @@
 process.env["FFMPEG_PATH"] = process.env["LAMBDA_TASK_ROOT"] + "/ffmpeg/ffmpeg";
 process.env["FFPROBE_PATH"] = process.env["LAMBDA_TASK_ROOT"] + "/ffmpeg/ffprobe";
 
-var AWS = require('aws-sdk'),
+const AWS = require('aws-sdk'),
     fs = require('fs'),
     somepath = require('path'),
-    ffmpeg = require('fluent-ffmpeg');
+    ffmpeg = require('fluent-ffmpeg'),
+    s3 = new AWS.S3();
 
 ffmpeg.setFfmpegPath(process.env["FFMPEG_PATH"]);
 ffmpeg.setFfprobePath(process.env["FFPROBE_PATH"]);
-
-var s3 = new AWS.S3();
 
 function s4() {
   return Math.floor((1 + Math.random()) * 0x10000)
